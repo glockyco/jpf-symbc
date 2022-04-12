@@ -71,6 +71,7 @@ public class PathCondition implements Comparable<PathCondition> {
 
     public Constraint header;
     int count = 0;
+    int lineNumber = 0;
     protected int solverCalls = 0;
 
     private Instance instance = null;
@@ -90,6 +91,7 @@ public class PathCondition implements Comparable<PathCondition> {
     public PathCondition() {
         header = null;
         arrayExpressions = new HashMap<String, ArrayExpression>();
+        int lineNumber = 0;
     }
 
     public Instance getInstance() {
@@ -110,7 +112,17 @@ public class PathCondition implements Comparable<PathCondition> {
         pc_new.spc = this.spc.make_copy(pc_new); // TODO: to review
         pc_new.solverCalls = this.solverCalls;
         pc_new.arrayExpressions = this.arrayExpressions;
+        pc_new.lineNumber = this.lineNumber;
         return pc_new;
+    }
+
+    public void setLineNumber(int lineNumber){
+        //if(lineNumber == 0)
+            this.lineNumber = lineNumber;
+    }
+
+    public int getLineNumber(){
+        return lineNumber;
     }
 
     //Added by Aymeric
@@ -260,6 +272,7 @@ public class PathCondition implements Comparable<PathCondition> {
             t.and = header;
             header = t;
             count++;
+            t.setLineNumber(lineNumber);
             return true;
         } else {
             return false;
@@ -488,6 +501,12 @@ public class PathCondition implements Comparable<PathCondition> {
             return false;
         }
         return true;
+    }
+
+    public boolean samePC(PathCondition p1){
+        PathCondition p = p1.spc.getNpc();
+        PathCondition p2 = this.spc.getNpc();
+        return p.equals(p2);
     }
 
     /**

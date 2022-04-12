@@ -80,7 +80,7 @@ public class IFLT extends gov.nasa.jpf.jvm.bytecode.IFLT {
                 pc = ((PCChoiceGenerator) prev_cg).getCurrentPC();
 
             assert pc != null;
-
+            pc.setLineNumber(this.getLineNumber());
             if (conditionValue) {
                 pc._addDet(Comparator.LT, sym_v, 0);
                 if (!pc.simplify()) {// not satisfiable

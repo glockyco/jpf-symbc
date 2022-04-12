@@ -85,7 +85,7 @@ public class IF_ICMPGT extends gov.nasa.jpf.jvm.bytecode.IF_ICMPGT {
                 pc = ((PCChoiceGenerator) prev_cg).getCurrentPC();
 
             assert pc != null;
-
+            pc.setLineNumber(this.getLineNumber());
             if (conditionValue) {
                 if (sym_v1 != null) {
                     if (sym_v2 != null) { // both are symbolic values

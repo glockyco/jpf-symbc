@@ -94,6 +94,7 @@ public abstract class SwitchInstruction extends gov.nasa.jpf.jvm.bytecode.Switch
                 pc = ((PCChoiceGenerator) prev_cg).getCurrentPC();
 
             assert pc != null;
+            pc.setLineNumber(this.getLineNumber());
             int idx;
             if (SymbolicInstructionFactory.collect_constraints) {
                 // Find which concrete branch corresponds the the value. If none, then idx == matches.length, which

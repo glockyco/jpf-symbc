@@ -65,7 +65,7 @@ public class I2F extends gov.nasa.jpf.jvm.bytecode.I2F {
 					else 
 						pc = ((PCChoiceGenerator)prev_cg).getCurrentPC();
 					assert pc != null;
-					
+			  		pc.setLineNumber(this.getLineNumber());
 					StackFrame sf = th.getModifiableTopFrame();
 					int ival = sf.pop();
 					sf.pushFloat(ival);

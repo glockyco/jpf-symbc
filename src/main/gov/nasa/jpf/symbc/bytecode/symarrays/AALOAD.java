@@ -111,8 +111,8 @@ public class AALOAD extends gov.nasa.jpf.jvm.bytecode.AALOAD {
               pc = new PathCondition();
           else
               pc = ((PCChoiceGenerator)prev_cg).getCurrentPC();
-
           assert pc != null;
+          pc.setLineNumber(this.getLineNumber());
           indexAttr = ((IntegerExpression)peekIndexAttr(ti));
 
           if (currentChoice < arrayInfo.arrayLength()) {
@@ -215,8 +215,8 @@ public class AALOAD extends gov.nasa.jpf.jvm.bytecode.AALOAD {
       if (pc.arrayExpressions.containsKey(arrayAttr.getRootName())) {
          arrayAttr = (ArrayExpression)pc.arrayExpressions.get(arrayAttr.getRootName());
       }
-
       assert pc != null;
+      pc.setLineNumber(this.getLineNumber());
       if (peekIndexAttr(ti) == null || !(peekIndexAttr(ti) instanceof IntegerExpression)) {
           // The index is not symbolic
           index = frame.peek();
@@ -261,7 +261,7 @@ public class AALOAD extends gov.nasa.jpf.jvm.bytecode.AALOAD {
 
           assert pcHeap != null;
           assert symInputHeap != null;
-
+          pcHeap.setLineNumber(this.getLineNumber());
           SelectExpression se = null;
 
           if (peekIndexAttr(ti) == null || !(peekIndexAttr(ti) instanceof IntegerExpression)) {

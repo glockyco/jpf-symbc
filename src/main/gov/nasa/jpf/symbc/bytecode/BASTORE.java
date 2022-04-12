@@ -102,7 +102,7 @@ public class BASTORE extends gov.nasa.jpf.jvm.bytecode.BASTORE {
                 pc = ((PCChoiceGenerator) prevCG).getCurrentPC();
 
             assert pc != null;
-
+            pc.setLineNumber(this.getLineNumber());
             if (index < len) {
                 pc._addDet(Comparator.EQ, index, sym_index);
                 if (pc.simplify()) { // satisfiable

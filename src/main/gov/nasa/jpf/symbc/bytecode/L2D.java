@@ -69,6 +69,7 @@ public class L2D extends gov.nasa.jpf.jvm.bytecode.L2D {
 				else 
 					pc = ((PCChoiceGenerator)prev_cg).getCurrentPC();
 				assert pc != null;
+		  		pc.setLineNumber(this.getLineNumber());
 				StackFrame sf = th.getModifiableTopFrame();
 			    long v = sf.popLong();
 			    sf.pushDouble(v);

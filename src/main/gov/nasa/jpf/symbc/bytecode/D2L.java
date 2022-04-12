@@ -70,7 +70,7 @@ public class D2L extends gov.nasa.jpf.jvm.bytecode.D2L {
 			else 
 				pc = ((PCChoiceGenerator)prev_cg).getCurrentPC();
 			assert pc != null;
-			
+			pc.setLineNumber(this.getLineNumber());
 			StackFrame sf = th.getModifiableTopFrame();
 			
 		    double v = sf.popDouble();

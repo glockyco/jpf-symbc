@@ -122,7 +122,7 @@ public class NEWARRAY extends gov.nasa.jpf.jvm.bytecode.NEWARRAY {
             else
                 pc = ((PCChoiceGenerator)prev_cg).getCurrentPC();
             assert pc != null;
-
+            pc.setLineNumber(this.getLineNumber());
             if ((Integer)cg.getNextChoice() == 0) {
                 pc._addDet(Comparator.LT, (IntegerExpression)attr, new IntegerConstant(0));
                 if (pc.simplify()) {

@@ -97,7 +97,7 @@ public class ANEWARRAY extends gov.nasa.jpf.jvm.bytecode.ANEWARRAY {
             else
                 pc = ((PCChoiceGenerator)prev_cg).getCurrentPC();
             assert pc != null;
-
+            pc.setLineNumber(this.getLineNumber());
             if ((Integer)cg.getNextChoice() == 0) {
                 // Checks if the length can be negative. If so, it is an error
                 pc._addDet(Comparator.LT, (IntegerExpression)attr, new IntegerConstant(0));

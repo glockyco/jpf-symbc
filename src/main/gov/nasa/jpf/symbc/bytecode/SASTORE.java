@@ -103,7 +103,7 @@ public class SASTORE extends gov.nasa.jpf.jvm.bytecode.SASTORE {
                 pc = ((PCChoiceGenerator) prevCG).getCurrentPC();
 
             assert pc != null;
-
+            pc.setLineNumber(this.getLineNumber());
             if (index < len) {
                 pc._addDet(Comparator.EQ, index, sym_index);
                 if (pc.simplify()) { // satisfiable

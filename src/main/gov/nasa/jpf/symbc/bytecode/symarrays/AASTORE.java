@@ -98,7 +98,7 @@ public class AASTORE extends gov.nasa.jpf.jvm.bytecode.AASTORE {
                       pc = ((PCChoiceGenerator)prev_cg).getCurrentPC();
 
                   assert pc != null;
-
+                  pc.setLineNumber(this.getLineNumber());
                   indexAttr = (IntegerExpression)peekIndexAttr(ti); // We know that the index is here symbolic
               
                   assert (indexAttr != null) : "indexAttr shouldn't be null in AASTORE instruction";
@@ -165,7 +165,7 @@ public class AASTORE extends gov.nasa.jpf.jvm.bytecode.AASTORE {
               pc = ((PCChoiceGenerator)prev_cg).getCurrentPC();
 
           assert pc != null;
-
+         pc.setLineNumber(this.getLineNumber());
           if (peekIndexAttr(ti) == null || !(peekIndexAttr(ti) instanceof IntegerExpression)) {
               int index = ti.getTopFrame().peek(1);
               indexAttr = new IntegerConstant(index);

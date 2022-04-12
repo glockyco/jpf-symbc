@@ -42,6 +42,10 @@ import gov.nasa.jpf.vm.StackFrame;
 import gov.nasa.jpf.vm.ThreadInfo;
 import gov.nasa.jpf.vm.VM;
 
+import gov.nasa.jpf.symbc.numeric.SymbolicFunction;
+import gov.nasa.jpf.symbc.numeric.SymbolicIntFunction;
+import gov.nasa.jpf.symbc.numeric.SymbolicRealFunction;
+
 public class ConcreteExecutionListener extends PropertyListenerAdapter {
 
 	Config config;
@@ -64,13 +68,14 @@ public class ConcreteExecutionListener extends PropertyListenerAdapter {
 	public void instructionExecuted(VM vm, ThreadInfo currentThread, Instruction nextInstruction, Instruction executedInstruction) {
 
 		Instruction lastInsn =  executedInstruction;
-		MethodInfo mi = executedInstruction.getMethodInfo();
 		if(lastInsn != null && lastInsn instanceof JVMInvokeInstruction) {
+            MethodInfo mi = ((JVMInvokeInstruction)executedInstruction).getInvokedMethod();
 			boolean foundAnote = checkConcreteAnnotation(mi);
 			if(foundAnote) {
+			    System.out.println("I am here !");
 				ThreadInfo ti = vm.getCurrentThread();
 				StackFrame sf = ti.popAndGetModifiableTopFrame();
-				FunctionExpression result =
+				SymbolicFunction result =
 					generateFunctionExpression(mi, (JVMInvokeInstruction)
 													lastInsn, ti);
 				checkReturnType(ti, mi, result);
@@ -82,7 +87,7 @@ public class ConcreteExecutionListener extends PropertyListenerAdapter {
 
 
 	private boolean checkConcreteAnnotation(MethodInfo mi) {
-		AnnotationInfo[] ai = mi.getAnnotations();
+		/*AnnotationInfo[] ai = mi.getAnnotations();
 		boolean retVal = false;
 		if(ai == null || ai.length == 0)  return retVal;
 		for(int aIndex = 0; aIndex < ai.length; aIndex++) {
@@ -103,10 +108,77 @@ public class ConcreteExecutionListener extends PropertyListenerAdapter {
 //						System.out.println("discovered partition "+partitions[i]);
 			}
 		}
-		return retVal;
+		return retVal;*/
+		String name = mi.getName();
+		System.out.println("Name : "+name);
+		if(name.contains("UF_"))
+			return true;
+		return false;
 	}
 
-	private FunctionExpression generateFunctionExpression(MethodInfo mi,
+	private SymbolicFunction generateFunctionExpression(MethodInfo mi,
+														JVMInvokeInstruction ivk, ThreadInfo ti) {
+		Object[] attrs = ivk.getArgumentAttrs(ti);
+		Object[] values = ivk.getArgumentValues(ti);
+		String[] types = mi.getArgumentTypeNames();
+		assert (attrs != null);
+
+		assert (attrs.length == values.length &&
+				values.length == types.length);
+		int size = attrs.length;
+		Class<?>[] args_type = new Class<?>[size];
+		Expression[] sym_args = new Expression[size];
+
+		Map<String, Expression> expressionMap =
+				new HashMap<String, Expression>();
+		LocalVarInfo[] localVars = mi.getLocalVars();
+		for (int argIndex = 0; argIndex < size; argIndex++) {
+			Object attribute = attrs[argIndex];
+			//The object has no attributes, so it is a constant (int double boolean, so on)
+			if (attribute == null) {
+				sym_args[argIndex] = this.generateConstant(
+						types[argIndex],
+						values[argIndex]);
+			} else {
+				sym_args[argIndex] = (Expression) attribute;
+				if (localVars.length > argIndex)
+					expressionMap.put(localVars[argIndex].getName(),
+							sym_args[argIndex]);
+
+
+			}
+			args_type[argIndex] = checkArgumentTypes(types[argIndex]);
+		}
+
+		ArrayList<PathCondition> conditions = null;
+        /*Partition.
+                createConditions(partitions, expressionMap);
+
+         */
+
+
+
+		/*FunctionExpression result= new FunctionExpression(
+				mi.getClassName(),
+				mi.getName(), args_type, sym_args, conditions);
+		return result;*/
+		String retTypeName = mi.getReturnTypeName();
+		if (retTypeName.equals("int") || retTypeName.equals("short") || retTypeName.equals("boolean") || retTypeName.equals("long")) {
+			return new SymbolicIntFunction(
+					mi.getClassName(), mi.getName(), args_type, sym_args, conditions);
+		}
+		if (retTypeName.equals("double") || retTypeName.equals("float")) {
+			return new SymbolicRealFunction(
+					mi.getClassName(), mi.getName(), args_type, sym_args, conditions);
+		}
+		//if()
+		else {
+			return null;
+			//strings ? arrays ?
+		}
+	}
+
+	/*private FunctionExpression generateFunctionExpression(MethodInfo mi,
 			JVMInvokeInstruction ivk, ThreadInfo ti){
 		Object [] attrs = ivk.getArgumentAttrs(ti);
 		Object [] values = ivk.getArgumentValues(ti);
@@ -152,6 +224,8 @@ public class ConcreteExecutionListener extends PropertyListenerAdapter {
 
 		return result;
 	}
+
+	 */
 
 
 	private void checkReturnType(ThreadInfo ti, MethodInfo mi, Object resultAttr) {

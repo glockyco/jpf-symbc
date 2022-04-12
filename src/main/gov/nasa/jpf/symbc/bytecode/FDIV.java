@@ -86,7 +86,7 @@ public class FDIV extends gov.nasa.jpf.jvm.bytecode.FDIV {
             pc = ((PCChoiceGenerator) prev_cg).getCurrentPC();
 
         assert pc != null;
-
+        pc.setLineNumber(this.getLineNumber());
         if (condition) { // check div by zero
             pc._addDet(Comparator.EQ, sym_v1, 0);
             if (pc.simplify()) { // satisfiable

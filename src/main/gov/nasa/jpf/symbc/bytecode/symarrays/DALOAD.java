@@ -92,7 +92,9 @@ public class DALOAD extends gov.nasa.jpf.jvm.bytecode.DALOAD {
               pc = ((PCChoiceGenerator)prev_cg).getCurrentPC();
 
           assert pc != null;
-
+         System.out.println("The pc is : "+this.getLineNumber()+" *********************************************");
+         pc.setLineNumber(this.getLineNumber());
+         System.out.println("The pc is : "+pc.toString()+" *********************************************");
           if (peekArrayAttr(ti) == null || !(peekArrayAttr(ti) instanceof ArrayExpression)) {
               // In this case, the array isn't symbolic
               if (peekIndexAttr(ti) == null || !(peekIndexAttr(ti) instanceof IntegerExpression)) {
@@ -120,14 +122,17 @@ public class DALOAD extends gov.nasa.jpf.jvm.bytecode.DALOAD {
           } else {
               indexAttr = (IntegerExpression)peekIndexAttr(ti);
           }
-
+         assert arrayAttr != null;
+         assert indexAttr != null;
           SymbolicReal val = new SymbolicReal(arrayAttr.getName() + "[" + indexAttr.hashCode() + "]");
+         System.out.println("Hashcode : "+indexAttr.hashCode()+"   "+val.stringPC()+" **************************************");
           se = new SelectExpression(arrayAttr, indexAttr);
-          assert arrayAttr != null;
-          assert indexAttr != null;
+
           assert se != null;
-		  
-          if ((Integer)cg.getNextChoice() == 1) { // check bounds of the index
+         System.out.println("The expression is : "+se.toString()+" *********************************************");
+         System.out.println("The pc is : "+this.getLineNumber()+"  "+pc.getLineNumber()+" *********************************************");
+
+         if ((Integer)cg.getNextChoice() == 1) { // check bounds of the index
               pc._addDet(Comparator.GE, se.indexExpression, se.arrayExpression.length);
               if (pc.simplify()) { // satisfiable
                   ((PCChoiceGenerator) cg).setCurrentPC(pc);
@@ -145,15 +150,17 @@ public class DALOAD extends gov.nasa.jpf.jvm.bytecode.DALOAD {
                   ti.getVM().getSystemState().setIgnored(true);
                   return getNext(ti);
               }
-          } else {
-              pc._addDet(Comparator.LT, se.indexExpression, se.arrayExpression.length);
+          }
+         else {
+            pc._addDet(Comparator.LT, se.indexExpression, se.arrayExpression.length);
               pc._addDet(Comparator.GE, se.indexExpression, new IntegerConstant(0));
-              if (pc.simplify()) { // satisfiable
-                  ((PCChoiceGenerator) cg).setCurrentPC(pc);
+             if (pc.simplify()) { // satisfiable
+
+                 ((PCChoiceGenerator) cg).setCurrentPC(pc);
                   frame.pop(2); // We pop the array and the index
-                  frame.pushDouble(0);
+                 frame.pushDouble(0);
                   // Set the result
-                  frame.setLongOperandAttr(val);
+                 frame.setLongOperandAttr(val);
                   pc._addDet(Comparator.EQ, se, val);
                   pc.arrayExpressions.put(arrayAttr.getRootName(), arrayAttr);
                   return getNext(ti);

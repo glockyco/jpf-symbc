@@ -83,7 +83,7 @@ public class IFLE extends gov.nasa.jpf.jvm.bytecode.IFLE {
 
             }
             assert pc != null;
-
+            pc.setLineNumber(this.getLineNumber());
             if (conditionValue) {
                 pc._addDet(Comparator.LE, sym_v, 0);
                 if (!pc.simplify()) {// not satisfiable

@@ -96,7 +96,7 @@ public class FALOAD extends gov.nasa.jpf.jvm.bytecode.FALOAD {
               pc = ((PCChoiceGenerator)prev_cg).getCurrentPC();
 
           assert pc != null;
-
+         pc.setLineNumber(this.getLineNumber());
           if (peekArrayAttr(ti) == null || !(peekArrayAttr(ti) instanceof ArrayExpression)) {
               // In this case, the array isn't symbolic
               if (peekIndexAttr(ti) == null || !(peekIndexAttr(ti) instanceof IntegerExpression)) {

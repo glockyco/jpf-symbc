@@ -101,7 +101,8 @@ public class DALOAD extends gov.nasa.jpf.jvm.bytecode.DALOAD {
                 pc = ((PCChoiceGenerator) prevCG).getCurrentPC();
 
             assert pc != null;
-
+            System.out.println("The pc is : "+this.getLineNumber()+" *********************************************");
+            pc.setLineNumber(this.getLineNumber());
             if (index < len) {
                 pc._addDet(Comparator.EQ, index, sym_index);
                 if (pc.simplify()) { // satisfiable

@@ -60,7 +60,7 @@ public class F2I extends gov.nasa.jpf.jvm.bytecode.F2I {
 			else 
 				pc = ((PCChoiceGenerator)prev_cg).getCurrentPC();
 			assert pc != null;
-			
+			pc.setLineNumber(this.getLineNumber());
 			StackFrame sf = th.getModifiableTopFrame();
 			
 		    float v = sf.popFloat();

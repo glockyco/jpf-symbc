@@ -83,7 +83,7 @@ public class TABLESWITCH extends SwitchInstruction implements gov.nasa.jpf.vm.by
             pc = ((PCChoiceGenerator) prev_cg).getCurrentPC();
 
         assert pc != null;
-
+        pc.setLineNumber(this.getLineNumber());
         /* YN: enabling concolic exection */
         // int idx = (Integer)cg.getNextChoice();
         int idx;

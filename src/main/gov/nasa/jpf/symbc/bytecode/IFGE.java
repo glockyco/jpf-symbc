@@ -83,7 +83,7 @@ public class IFGE extends gov.nasa.jpf.jvm.bytecode.IFGE {
                 pc = ((PCChoiceGenerator) prev_cg).getCurrentPC();
 
             assert pc != null;
-
+            pc.setLineNumber(this.getLineNumber());
             if (conditionValue) {
                 pc._addDet(Comparator.GE, sym_v, 0);
                 if (!pc.simplify()) {// not satisfiable

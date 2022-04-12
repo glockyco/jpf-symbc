@@ -15,6 +15,7 @@
  * See the License for the specific language governing permissions and 
  * limitations under the License.
  */
+//figure out where to change the name
 
 package gov.nasa.jpf.symbc.arrays;
 
@@ -37,7 +38,7 @@ public class ArrayExpression extends Expression {
 
     public ArrayExpression(String name) {
         this.name=name;
-        this.length = new SymbolicInteger(name+"_length");
+        this.length = new SymbolicInteger(name+".length");
     }
 
     public ArrayExpression(String name, int l) {
@@ -47,7 +48,7 @@ public class ArrayExpression extends Expression {
 
     public ArrayExpression(String name, String arrayType) {
         this.name = name;
-        this.length = new SymbolicInteger(name+"_length");
+        this.length = new SymbolicInteger(name+".length");
         this.elemType = arrayType;
     }
 
@@ -95,7 +96,7 @@ public class ArrayExpression extends Expression {
     }
 
    public String stringPC() {
-        return (name != null) ? name : "ARRAY_" + hashCode();
+        return (name != null) ? name+"_SYMARRAY" : "ARRAY_" + hashCode();
     }
 
     public void accept(ConstraintExpressionVisitor visitor) {

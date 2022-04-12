@@ -332,6 +332,10 @@ public class MinMax {
 		}
 	}
 
+	public static void setMinInt(String varName,long newMinInt){
+		varMinIntMap.put(varName,newMinInt);
+	}
+
 	private static long getVarMin(String varname, long min) {
 		if (varname.endsWith("_SYMINT")) {
 			varname = varname.replaceAll("_[0-9][0-9]*_SYMINT", "");

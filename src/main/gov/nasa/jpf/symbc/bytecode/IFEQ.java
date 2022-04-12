@@ -89,7 +89,7 @@ public class IFEQ extends gov.nasa.jpf.jvm.bytecode.IFEQ {
                 pc = ((PCChoiceGenerator) prev_cg).getCurrentPC();
 
             assert pc != null;
-
+            pc.setLineNumber(this.getLineNumber());
             if (SymbolicInstructionFactory.collect_constraints) {
                 if (conditionValue) {
                     pc._addDet(Comparator.EQ, sym_v, 0);

@@ -57,14 +57,14 @@ public class IFInstrSymbHelper {
 				pc = prevPcGen.getCurrentPC();
 			else
 				pc = new PathCondition();
-			
+			pc.setLineNumber(instr.getLineNumber());
 			PathCondition firstPC = pc.make_copy();
 			PathCondition secPC = pc.make_copy();
 			PathCondition thirdPC = pc.make_copy();
 			
 			long v1 = ti.getModifiableTopFrame().peekLong();
 			long v2 = ti.getModifiableTopFrame().peekLong(2);
-			
+
 			if(sym_v1 != null){
 				if(sym_v2 != null){ //both are symbolic values
 					firstPC._addDet(firstComparator,sym_v2,sym_v1);
@@ -140,7 +140,7 @@ public class IFInstrSymbHelper {
 				pc = new PathCondition();
 			else
 				pc = ((PCChoiceGenerator)prevCg).getCurrentPC();
-			
+			pc.setLineNumber(instr.getLineNumber());
 			conditionValue = ((PCChoiceGenerator) curCg).getNextChoice() -1;
 			if (conditionValue == -1) {
 				if (sym_v1 != null) {
@@ -198,7 +198,7 @@ public class IFInstrSymbHelper {
 				pc = prevPcGen.getCurrentPC();
 			else
 				pc = new PathCondition();
-			
+			pc.setLineNumber(instr.getLineNumber());
 			PathCondition firstPC = pc.make_copy();
 			PathCondition secPC = pc.make_copy();
 			PathCondition thirdPC = pc.make_copy();
@@ -281,6 +281,7 @@ public class IFInstrSymbHelper {
 			else
 				pc = prevCg.getCurrentPC();
 			
+			pc.setLineNumber(instr.getLineNumber());
 			conditionValue = ((PCChoiceGenerator) curCg).getNextChoice() -1;
 			if (conditionValue == -1) {
 				if (sym_v1 != null) {
@@ -341,6 +342,7 @@ public class IFInstrSymbHelper {
 			else
 				pc = new PathCondition();
 			
+			pc.setLineNumber(instr.getLineNumber());
 			PathCondition firstPC = pc.make_copy();
 			PathCondition secPC = pc.make_copy();
 			PathCondition thirdPC = pc.make_copy();
@@ -422,7 +424,9 @@ public class IFInstrSymbHelper {
 				pc = new PathCondition();
 			else
 				pc = prevCg.getCurrentPC();
+
 			
+			pc.setLineNumber(instr.getLineNumber());
 			conditionValue = ((PCChoiceGenerator) curCg).getNextChoice() -1;
 			if (conditionValue == -1) {
 				if (sym_v1 != null) {
@@ -482,6 +486,7 @@ public class IFInstrSymbHelper {
 			else
 				pc = new PathCondition();
 			
+			pc.setLineNumber(instr.getLineNumber());
 			PathCondition eqPC = pc.make_copy();
 			PathCondition nePC = pc.make_copy();
 			eqPC._addDet(trueComparator, sym_v, 0);
@@ -517,6 +522,8 @@ public class IFInstrSymbHelper {
 				pc = new PathCondition();
 			else
 				pc = prevCg.getCurrentPC();
+			
+			pc.setLineNumber(instr.getLineNumber());
 			boolean conditionValue = (Integer)curCg.getNextChoice()==1 ? true: false;
 			if(conditionValue) {
 				pc._addDet(trueComparator, sym_v, 0);
@@ -552,6 +559,7 @@ public class IFInstrSymbHelper {
 			else
 				pc = new PathCondition();
 			
+			pc.setLineNumber(instr.getLineNumber());
 			PathCondition eqPC = pc.make_copy();
 			PathCondition nePC = pc.make_copy();
 			
@@ -605,6 +613,7 @@ public class IFInstrSymbHelper {
 			else
 				pc = prevCg.getCurrentPC();
 			
+			pc.setLineNumber(instr.getLineNumber());
 			boolean conditionValue = (Integer)curCg.getNextChoice()==1 ? true: false;
 			if(conditionValue) {
 				if(sym_v1 != null){

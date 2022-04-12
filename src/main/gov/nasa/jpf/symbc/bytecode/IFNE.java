@@ -91,7 +91,7 @@ public class IFNE extends gov.nasa.jpf.jvm.bytecode.IFNE {
                 pc = ((PCChoiceGenerator) prev_cg).getCurrentPC();
 
             assert pc != null;
-
+            pc.setLineNumber(this.getLineNumber());
             if (conditionValue) {
                 if (dp[0].equalsIgnoreCase("omega")) {// hack
                     if ((Integer) cg.getNextChoice() == 1)

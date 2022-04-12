@@ -47,6 +47,7 @@ public abstract class Constraint implements Comparable<Constraint> {
   private final Expression right;
 
   public Constraint and;
+  private int lineNumber = -1;
 
   public Constraint(Expression l, Comparator c, Expression r) {
     left = l;
@@ -84,6 +85,14 @@ public abstract class Constraint implements Comparable<Constraint> {
    */
   public Constraint getTail() {
     return and;
+  }
+
+  public void setLineNumber(int lineNumber){
+    this.lineNumber = lineNumber;
+  }
+
+  public int getLineNumber() {
+    return lineNumber;
   }
 
   public String stringPC() {
@@ -155,7 +164,7 @@ public abstract class Constraint implements Comparable<Constraint> {
 	}
   
   public String toString() {
-    return left.toString() + comp.toString() + right.toString()
+    return lineNumber+": "+left.toString() + comp.toString() + right.toString()
         //+ ((and == null) ? "" : " && " + and.toString()); -- for specialization
         + ((and == null) ? "" : " &&\n" + and.toString());
   }

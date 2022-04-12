@@ -100,7 +100,7 @@ public class FASTORE extends gov.nasa.jpf.jvm.bytecode.FASTORE {
               pc = ((PCChoiceGenerator)prev_cg).getCurrentPC();
           
           assert pc != null;
-
+         pc.setLineNumber(this.getLineNumber());
 		  if (peekIndexAttr(ti)==null || !(peekIndexAttr(ti) instanceof IntegerExpression)) {
               int index = ti.getTopFrame().peek(1);
               indexAttr = new IntegerConstant(index); 

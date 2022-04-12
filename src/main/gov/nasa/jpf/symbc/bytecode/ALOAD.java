@@ -75,12 +75,11 @@ public class ALOAD extends gov.nasa.jpf.jvm.bytecode.ALOAD {
 		ElementInfo ei = th.getElementInfo(objRef);
 		Object attr = sf.getLocalAttr(index);
 		String typeOfLocalVar = super.getLocalVariableType();
-
+		//System.out.println("***********************  "+typeOfLocalVar+"  "+((attr != null)?attr.toString():"null"));
 
 		if(attr == null || typeOfLocalVar.equals("?") || attr instanceof SymbolicStringBuilder || attr instanceof StringExpression || attr instanceof ArrayExpression) {
 			return super.execute(th);
 		}
-		
 		ClassInfo typeClassInfo = ClassLoaderInfo.getCurrentResolvedClassInfo(typeOfLocalVar);
 
 		int currentChoice;
@@ -139,6 +138,7 @@ public class ALOAD extends gov.nasa.jpf.jvm.bytecode.ALOAD {
 		}
 
 		assert pcHeap != null;
+		pcHeap.setLineNumber(this.getLineNumber());
 		assert symInputHeap != null;
 		
 		prevSymRefs = symInputHeap.getNodesOfType(typeClassInfo);

@@ -60,7 +60,7 @@ public class F2L extends gov.nasa.jpf.jvm.bytecode.F2L {
 				else 
 					pc = ((PCChoiceGenerator)prev_cg).getCurrentPC();
 				assert pc != null;
-				
+				pc.setLineNumber(this.getLineNumber());
 				StackFrame sf = th.getModifiableTopFrame();
 				float v = sf.popFloat();
 				sf.pushLong((long)v);

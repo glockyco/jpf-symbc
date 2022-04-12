@@ -95,7 +95,7 @@ public class LASTORE extends gov.nasa.jpf.jvm.bytecode.LASTORE {
               pc = ((PCChoiceGenerator)prev_cg).getCurrentPC();
           
           assert pc != null;
-
+         pc.setLineNumber(this.getLineNumber());
 		 if (peekIndexAttr(ti)==null || !(peekIndexAttr(ti) instanceof IntegerExpression)) {
               int index = peekIndex(ti);
               indexAttr =  new IntegerConstant(index); 

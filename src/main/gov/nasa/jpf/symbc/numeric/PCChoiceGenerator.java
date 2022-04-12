@@ -107,11 +107,13 @@ public class PCChoiceGenerator extends IntIntervalGenerator {
 
 	// sets the PC constraints for the current choice
 	public void setCurrentPC(PathCondition pc) {
+		pc.setLineNumber(this.offset);
 		PC.put(getNextChoice(),pc);
 
 	}
 	// sets the PC constraints for the specified choice
 	public void setPC(PathCondition pc, int choice) {
+			pc.setLineNumber(this.offset);
 			PC.put(new Integer(choice),pc);
 
 		}
@@ -122,6 +124,7 @@ public class PCChoiceGenerator extends IntIntervalGenerator {
 
 		pc = PC.get(getNextChoice());
 		if (pc != null) {
+			pc.setLineNumber(this.offset);
 			return pc.make_copy();
 		} else {
 			return null;

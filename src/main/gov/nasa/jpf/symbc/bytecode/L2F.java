@@ -68,6 +68,7 @@ public class L2F extends gov.nasa.jpf.jvm.bytecode.L2F {
 			else 
 				pc = ((PCChoiceGenerator)prev_cg).getCurrentPC();
 			assert pc != null;
+			pc.setLineNumber(this.getLineNumber());
 			StackFrame sf = th.getModifiableTopFrame();
 		    long v = sf.popLong();
 		    sf.pushFloat( v);
