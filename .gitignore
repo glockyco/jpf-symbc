@@ -2,6 +2,7 @@
 .hgignore
 local.properties
 .version
+.gradle/
 nbproject/private/*
 build/*
 dist/*
