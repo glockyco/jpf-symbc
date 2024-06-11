@@ -173,6 +173,9 @@ public abstract class Constraint implements Comparable<Constraint> {
 		visitor.preVisit(this);
 		left.accept(visitor);
 		right.accept(visitor);
+		if (this.and != null) {
+			and.accept(visitor);
+		}
 		visitor.postVisit(this);
 	}
 
