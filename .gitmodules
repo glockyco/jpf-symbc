@@ -1,3 +1,4 @@
 [submodule "jpf-core"]
 	path = jpf-core
-	url = https://github.com/javapathfinder/jpf-core
+	url = git@github.com:glockyco/jpf-core.git
+	branch = java-8
