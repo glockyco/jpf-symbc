@@ -323,7 +323,7 @@ public class PathCondition implements Comparable<PathCondition> {
     }
 
     public boolean solve() {
-        if (isReplay) {
+        if (isReplay || SymbolicInstructionFactory.collect_constraints) {
             return true;
         }
         if (SymbolicInstructionFactory.greenSolver == null)
@@ -333,7 +333,7 @@ public class PathCondition implements Comparable<PathCondition> {
     }
 
     public boolean simplify() {
-        if (isReplay) {
+        if (isReplay || SymbolicInstructionFactory.collect_constraints) {
             return true;
         }
         if (SymbolicInstructionFactory.greenSolver == null)
