@@ -18,6 +18,8 @@
 
 package gov.nasa.jpf.symbc.numeric;
 
+import gov.nasa.jpf.symbc.arrays.ArrayExpression;
+import gov.nasa.jpf.symbc.arrays.SelectExpression;
 import gov.nasa.jpf.symbc.concolic.FunctionExpression;
 import gov.nasa.jpf.symbc.mixednumstrg.SpecialIntegerExpression;
 import gov.nasa.jpf.symbc.mixednumstrg.SpecialRealExpression;
@@ -123,6 +125,12 @@ public abstract class ConstraintExpressionVisitor {
 	public void preVisit(BinaryLinearIntegerExpression expr) {
 	}
 
+	public void preVisit(ArrayExpression expr) {
+	}
+
+	public void preVisit(SelectExpression expr) {
+	}
+
 	public void preVisit(IntegerConstant expr) {
 	}
 
@@ -184,6 +192,12 @@ public abstract class ConstraintExpressionVisitor {
 	}
 
 	public void postVisit(BinaryLinearIntegerExpression expr) {
+	}
+
+	public void postVisit(ArrayExpression expr) {
+	}
+
+	public void postVisit(SelectExpression expr) {
 	}
 
 	public void postVisit(IntegerConstant expr) {

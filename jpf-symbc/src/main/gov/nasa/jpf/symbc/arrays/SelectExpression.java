@@ -36,6 +36,8 @@ public class SelectExpression extends Expression {
 
     public void accept(ConstraintExpressionVisitor visitor) {
         visitor.preVisit(this);
+        arrayExpression.accept(visitor);
+        indexExpression.accept(visitor);
         visitor.postVisit(this);
     }
 
