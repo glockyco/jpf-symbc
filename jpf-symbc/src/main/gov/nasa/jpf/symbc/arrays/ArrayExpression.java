@@ -37,7 +37,7 @@ public class ArrayExpression extends Expression {
 
     public ArrayExpression(String name) {
         this.name=name;
-        this.length = new SymbolicInteger(name+"_length");
+        this.length = new SymbolicInteger(name+".length");
     }
 
     public ArrayExpression(String name, int l) {
@@ -47,7 +47,7 @@ public class ArrayExpression extends Expression {
 
     public ArrayExpression(String name, String arrayType) {
         this.name = name;
-        this.length = new SymbolicInteger(name+"_length");
+        this.length = new SymbolicInteger(name+".length");
         this.elemType = arrayType;
     }
 

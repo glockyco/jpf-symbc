@@ -363,7 +363,7 @@ public class BytecodeUtils {
 
                             if (eiArray != null)
                                 for (int i = 0; i < eiArray.arrayLength(); i++) {
-                                    IntegerExpression sym_v = new SymbolicInteger(varName(name + i, VarType.INT));
+                                    IntegerExpression sym_v = new SymbolicInteger(varName(name + "[" + i + "]", VarType.INT));
                                     expressionMap.put(name + i, sym_v);
                                     eiArray.addElementAttr(i, sym_v);
                                     outputString = outputString.concat(" " + sym_v + ",");
@@ -393,7 +393,7 @@ public class BytecodeUtils {
 
                             if (eiArray != null)
                                 for (int i = 0; i < eiArray.arrayLength(); i++) {
-                                    RealExpression sym_v = new SymbolicReal(varName(name + i, VarType.REAL));
+                                    RealExpression sym_v = new SymbolicReal(varName(name + "[" + i + "]", VarType.REAL));
                                     expressionMap.put(name + i, sym_v);
                                     eiArray.addElementAttr(i, sym_v);
                                     outputString = outputString.concat(" " + sym_v + ",");
@@ -423,7 +423,7 @@ public class BytecodeUtils {
 
                             if (eiArray != null)
                                 for (int i = 0; i < eiArray.arrayLength(); i++) {
-                                    IntegerExpression sym_v = new SymbolicInteger(varName(name + i, VarType.INT), 0, 1);
+                                    IntegerExpression sym_v = new SymbolicInteger(varName(name + "[" + i + "]", VarType.INT), 0, 1);
                                     expressionMap.put(name + i, sym_v);
                                     eiArray.addElementAttr(i, sym_v);
                                     outputString = outputString.concat(" " + sym_v + ",");
