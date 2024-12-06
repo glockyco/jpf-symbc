@@ -100,7 +100,7 @@ public class SymbolicStringHandler {
 				|| cname.equals("java.lang.Long")
 				|| cname.equals("java.lang.Short")
 				|| cname.equals("java.lang.Byte")
-				|| cname.equals("java.lang.Char")
+				|| cname.equals("java.lang.Character")
 				|| cname.equals("java.lang.Boolean")
 				|| cname.equals("java.lang.Object")) {
 	        
