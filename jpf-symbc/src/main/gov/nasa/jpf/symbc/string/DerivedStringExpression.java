@@ -210,8 +210,12 @@ public class DerivedStringExpression extends StringExpression {
 	@Override
 	public void accept(ConstraintExpressionVisitor visitor) {
 		visitor.preVisit(this);
-		left.accept(visitor);
-		right.accept(visitor);
+		if (left != null) {
+			left.accept(visitor);
+		}
+		if (right != null) {
+			right.accept(visitor);
+		}
 		visitor.postVisit(this);
 	}
   
