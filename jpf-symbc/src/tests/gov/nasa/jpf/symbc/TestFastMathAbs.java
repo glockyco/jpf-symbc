@@ -23,7 +23,7 @@ import org.junit.Test;
 
 public class TestFastMathAbs extends InvokeTest {
   private static final String SYM_METHOD = "+symbolic.method=gov.nasa.jpf.symbc.TestFastMathAbs.testAbs(sym)";
-  private static final String COMPAT_METHOD = "+symbolic.method=gov.nasa.jpf.symbc.TestFastMathAbs.testCompatibleJarvisMethods(sym#sym#sym)";
+  private static final String COMPAT_METHOD = "+symbolic.method=gov.nasa.jpf.symbc.TestFastMathAbs.testCompatibleJarvisMethods(sym#sym#con)";
   private static final String[] JPF_ARGS = {INSN_FACTORY, SYM_METHOD, COMPAT_METHOD};
 
   public static void main(String[] args) {
@@ -50,12 +50,8 @@ public class TestFastMathAbs extends InvokeTest {
     if (FastMath.min(left, right) == FastMath.max(left, right)) {
       System.out.println("equal");
     }
-    try {
-      if (FastMath.toIntExact(value) == 0) {
-        System.out.println("zero");
-      }
-    } catch (ArithmeticException e) {
-      // value is outside int range; expected on overflow paths
+    if (FastMath.toIntExact(value) == 0) {
+      System.out.println("zero");
     }
   }
 }
