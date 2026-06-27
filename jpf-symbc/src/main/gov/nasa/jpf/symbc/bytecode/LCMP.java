@@ -59,7 +59,6 @@ public class LCMP extends gov.nasa.jpf.jvm.bytecode.LCMP {
 
             int conditionValue = conditionValue(v1, v2);
 
-            sf.push(conditionValue);
 
             cg = th.getVM().getSystemState().getChoiceGenerator();
             assert (cg instanceof PCChoiceGenerator) : "expected PCChoiceGenerator, got: " + cg;
@@ -69,6 +68,7 @@ public class LCMP extends gov.nasa.jpf.jvm.bytecode.LCMP {
             } else {
                 conditionValue = ((PCChoiceGenerator) cg).getNextChoice() - 1;
             }
+            sf.push(conditionValue);
 
             PathCondition pc;
 

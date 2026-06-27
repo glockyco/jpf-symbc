@@ -249,6 +249,17 @@ public class ProblemZ3BitVector extends ProblemGeneral {
     }
 
     @Override
+    @SuppressWarnings("unchecked")
+    public Object fpToIEEEBV(Object exp) {
+        try {
+            return ctx.mkFPToIEEEBV((Expr<FPSort>) exp);
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw new RuntimeException("## Error Z3: fpToIEEEBV(Object) failed.\n" + e);
+        }
+    }
+
+    @Override
     public Object eq(long value, Object exp) {
         checkBounds(value);
         try {

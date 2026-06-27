@@ -90,6 +90,9 @@ public class PCParser {
       }
       return dp_var;
     }
+    if (eRef instanceof RawDoubleBitsExpression) {
+      return pb.fpToIEEEBV(getExpression(((RawDoubleBitsExpression) eRef).getArgument()));
+    }
 
     Operator    opRef;
     IntegerExpression	e_leftRef;

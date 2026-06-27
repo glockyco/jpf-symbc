@@ -219,6 +219,10 @@ public abstract class ProblemGeneral{
       throw new RuntimeException("## Error : makeRealConst not supported");
   }
 
+  public Object fpToIEEEBV(Object exp) {
+      throw new RuntimeException("## Error : fpToIEEEBV not supported");
+  }
+
 	public abstract Object mixed(Object exp1, Object exp2);
 
 	public abstract Boolean solve();

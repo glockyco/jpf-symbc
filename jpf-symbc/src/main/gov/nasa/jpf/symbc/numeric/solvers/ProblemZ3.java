@@ -137,6 +137,16 @@ public class ProblemZ3 extends ProblemGeneral {
 	    }
 	}
 
+	@SuppressWarnings("unchecked")
+	public Object fpToIEEEBV(Object exp) {
+		try {
+			return ctx.mkFPToIEEEBV((Expr<FPSort>) exp);
+		} catch (Exception e) {
+			e.printStackTrace();
+			throw new RuntimeException("## Error Z3: fpToIEEEBV(Object) failed.\n" + e);
+	    }
+	}
+
 	public Object eq(long value, Object exp){
 		try {
 			return ctx.mkEq( ctx.mkInt(value), (Expr)exp);
