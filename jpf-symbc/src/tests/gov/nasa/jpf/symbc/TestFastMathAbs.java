@@ -50,8 +50,12 @@ public class TestFastMathAbs extends InvokeTest {
     if (FastMath.min(left, right) == FastMath.max(left, right)) {
       System.out.println("equal");
     }
-    if (FastMath.toIntExact(value) == 0) {
-      System.out.println("zero");
+    try {
+      if (FastMath.toIntExact(value) == 0) {
+        System.out.println("zero");
+      }
+    } catch (ArithmeticException e) {
+      // value is outside int range; expected on overflow paths
     }
   }
 }
