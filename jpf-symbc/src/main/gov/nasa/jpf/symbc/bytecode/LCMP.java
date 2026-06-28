@@ -118,9 +118,9 @@ public class LCMP extends gov.nasa.jpf.jvm.bytecode.LCMP {
                     if (sym_v2 != null) { // both are symbolic values
                         pc._addDet(Comparator.GT, sym_v2, sym_v1);
                     } else
-                        pc._addDet(Comparator.GT, (int) v2, sym_v1);
+                        pc._addDet(Comparator.GT, v2, sym_v1); // v2 is long; (int) cast truncates values outside 32-bit range
                 } else
-                    pc._addDet(Comparator.GT, sym_v2, (int) v1);
+                    pc._addDet(Comparator.GT, sym_v2, v1); // v1 is long; same — matches LT branch at lines 94/96
                 if (!pc.simplify()) {// not satisfiable
                     th.getVM().getSystemState().setIgnored(true);
                 } else {

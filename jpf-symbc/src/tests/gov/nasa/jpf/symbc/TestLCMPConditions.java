@@ -29,7 +29,7 @@ import org.junit.Test;
  */
 public class TestLCMPConditions extends InvokeTest {
 
-	  private static final String SYM_METHOD = "+symbolic.method=gov.nasa.jpf.symbc.TestLCMPConditions.twoConditions(sym);gov.nasa.jpf.symbc.TestLCMPConditions.twoConditions2(sym)";
+	  private static final String SYM_METHOD = "+symbolic.method=gov.nasa.jpf.symbc.TestLCMPConditions.twoConditions(sym);gov.nasa.jpf.symbc.TestLCMPConditions.twoConditions2(sym);gov.nasa.jpf.symbc.TestLCMPConditions.gtLargeConst(sym)";
 	  private static final String DEBUG = "+symbolic.debug=true";	  
 	  private static final String DP = "+symbolic.dp=coral";	 
 	  private static final String[] JPF_ARGS = {INSN_FACTORY, SYM_METHOD, DEBUG, DP};
@@ -44,6 +44,9 @@ public class TestLCMPConditions extends InvokeTest {
 	    	//twoConditions(20000000000L);
 	    	twoConditions2(20000000L);
 	    	//threeConditions(20000000000L, 20000000000L);
+	    	// GT branch with concrete long > Integer.MAX_VALUE; before the fix, (int) 5_000_000_000L
+	    	// = 705032704 would corrupt the path constraint.
+	    	gtLargeConst(0L);
 	    }
 	  }
 	  
@@ -76,4 +79,11 @@ public class TestLCMPConditions extends InvokeTest {
 		  }
 		  return c;		  
 	  }
+
+  // Compares a symbolic long against 5_000_000_000L (> Integer.MAX_VALUE).
+  // Exercises the LCMP GT branch where exactly one operand is concrete and long-wide.
+  public static int gtLargeConst(long a) {
+	  if (a > 5_000_000_000L) return 1;
+	  else return -1;
+  }
 }
