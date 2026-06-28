@@ -233,6 +233,7 @@ public class SymbolicConstraintsGeneral {
                     SymbolicReal pcVar = e.getKey();
                     Object dpVar = e.getValue();
                     pcVar.solution = pb.getRealValue(dpVar); // may be undefined: throws an exception
+                    pcVar.solved = true;
                 }
             } catch (Exception exp) {
                 this.catchBody(PCParser.symRealVar, pb, pc);
@@ -293,6 +294,7 @@ public class SymbolicConstraintsGeneral {
             // because of floating point inaccuracies
             // trick to get a better value: cast to float?
             pcVar.solution = prob.getRealValueInf(dpVar);
+            pcVar.solved = true;
             // (prob.getRealValueInf(dpVar) + prob
             // .getRealValueSup(dpVar)) / 2;
             // (float)pcVar.solution_inf;
@@ -338,7 +340,8 @@ public class SymbolicConstraintsGeneral {
                     SymbolicReal pcVar = e.getKey();
                     Object dpVar = e.getValue();
                     double e_value = pb.getRealValue(dpVar); // may be undefined: throws an exception
-                    pcVar.solution = e_value; 
+                    pcVar.solution = e_value;
+                    pcVar.solved = true;
                     result.put(pcVar.getName(), e_value);
                 }
             } catch (Exception exp) {

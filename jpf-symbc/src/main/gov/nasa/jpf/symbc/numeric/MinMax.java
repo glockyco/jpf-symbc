@@ -112,7 +112,7 @@ public class MinMax {
 	/**
 	 * Lower bound on symbolic real variables.
 	 */
-	private static double minDouble = Double.MIN_VALUE; //-8;
+	private static double minDouble = -Double.MAX_VALUE; //-8;
 
 	/**
 	 * Upper bound on symbolic real variables.
@@ -456,7 +456,7 @@ public class MinMax {
 		if (varname.endsWith("_SYMINT")) {
 			varname = varname.replaceAll("_[0-9][0-9]*_SYMINT", "");
 		}
-		return varMinDoubleMap.containsKey(varname) ? varMinDoubleMap.get(varname) : minDouble;
+		return varMinDoubleMap != null && varMinDoubleMap.containsKey(varname) ? varMinDoubleMap.get(varname) : minDouble;
 	}
 	
 	/**
@@ -469,7 +469,7 @@ public class MinMax {
 		if (varname.endsWith("_SYMINT")) {
 			varname = varname.replaceAll("_[0-9][0-9]*_SYMINT", "");
 		}
-		return varMaxDoubleMap.containsKey(varname) ? varMaxDoubleMap.get(varname) : maxDouble;
+		return varMaxDoubleMap != null && varMaxDoubleMap.containsKey(varname) ? varMaxDoubleMap.get(varname) : maxDouble;
 	}
 
 }

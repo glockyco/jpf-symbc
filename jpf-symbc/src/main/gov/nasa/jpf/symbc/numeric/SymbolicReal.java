@@ -49,6 +49,10 @@ public class SymbolicReal extends RealExpression {
 	public double solution = UNDEFINED; // C
 	public double solution_inf = UNDEFINED; // C
 	public double solution_sup = UNDEFINED; // C
+	// UNDEFINED is Double.MIN_VALUE (~4.9e-324); with minDouble=-Double.MAX_VALUE, this value is inside
+	// the default symbolic range, so comparisons like "solution == UNDEFINED" are unreliable.
+	// Use the `solved` flag instead to track whether a concrete solution has been assigned.
+	boolean solved = false;
 
 	int unique_id;
 
@@ -121,8 +125,8 @@ public class SymbolicReal extends RealExpression {
 
 	public double solution() {
 		if (PathCondition.flagSolved) {
-			if (solution == UNDEFINED && SymbolicInstructionFactory.concolicMode) {
-				// return a random value in concolic mode; note that if the solution happens to be exactly the value of UNDEFINED, then there is a bug
+			if (!solved && SymbolicInstructionFactory.concolicMode) {
+				// no solver-assigned solution; generate a random value for concolic mode
 				double d;
 				d = new Random().nextDouble();
 				if(d < 0.5)
@@ -130,6 +134,7 @@ public class SymbolicReal extends RealExpression {
 				else
 					d = _max * d;
 				solution = d;
+				solved = true;
 			}
 			return solution;
 		}
