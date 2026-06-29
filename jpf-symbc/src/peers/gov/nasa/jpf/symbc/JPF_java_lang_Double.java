@@ -29,13 +29,25 @@ import gov.nasa.jpf.vm.NativePeer;
 public class JPF_java_lang_Double extends NativePeer {
   @MJI
   public long doubleToLongBits__D__J(MJIEnv env, int rcls, double v0) {
+    Object[] attrs = env.getArgAttributes();
+    if (attrs != null && attrs.length > 0 && attrs[0] instanceof RealExpression) {
+      // Same fail-loud rationale as doubleToRawLongBits: a symbolic double's bit
+      // pattern is not soundly generalizable, so record it instead of concretizing.
+      env.setReturnAttribute(new RawDoubleBitsExpression((RealExpression) attrs[0]));
+    }
     return Double.doubleToLongBits(v0);
   }
 
   @MJI
   public long doubleToRawLongBits__D__J(MJIEnv env, int rcls, double v0) {
     Object[] attrs = env.getArgAttributes();
-    if (SymbolicInstructionFactory.fp && attrs != null && attrs.length > 0 && attrs[0] instanceof RealExpression) {
+    if (attrs != null && attrs.length > 0 && attrs[0] instanceof RealExpression) {
+      // Preserve symbolic raw bits regardless of the symbolic.fp setting. Outside
+      // symbolic.fp the rational-real path cannot model the bit pattern, but recording
+      // the RawDoubleBitsExpression makes any dependent sign/ulp branch (e.g. the
+      // Double.doubleToRawLongBits check inside Precision.equals) surface as an
+      // unsupported SPF term downstream, so the generalization fails loud (is excluded)
+      // instead of silently concretizing the bits and producing an unsound property.
       env.setReturnAttribute(new RawDoubleBitsExpression((RealExpression) attrs[0]));
     }
     return Double.doubleToRawLongBits(v0);
