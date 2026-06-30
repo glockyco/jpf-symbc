@@ -83,16 +83,28 @@ public class TestDoubleRawBits extends InvokeTest {
   }
 
   @Test
-  public void rationalRealModeFallsBackToConcreteNativePeer() {
-    if (!isJPFRun()) {
-      Verify.resetCounter(3);
+  public void rationalRealModePreservesSymbolicRawBits() {
+    if (isJPFRun()) {
+      rawBitsConcreteFallback(1.0);
+      return;
     }
 
-    if (verifyNoPropertyViolation(RATIONAL_REAL_ARGS)) {
-      rawBitsConcreteFallback(1.0);
-    } else {
-      assertEquals("single concrete fallback region", 1, Verify.getCounter(3));
+    // The native peer records a symbolic double's raw bits (RawDoubleBitsExpression) regardless of
+    // the symbolic.fp setting. On the rational-real path there is no bit-precise solver, so the
+    // dependent sign-bit branch fails loud -- JPF surfaces the solver's inability to model the bit
+    // pattern as an internal exception -- rather than silently concretizing the bits to a single
+    // region, which would let an unsound generalization through.
+    AssertionError failure = null;
+    try {
+      verifyNoPropertyViolation(RATIONAL_REAL_ARGS);
+    } catch (AssertionError e) {
+      failure = e;
     }
+    assertTrue("expected the rational-real raw-bits branch to fail loud, but JPF ran clean",
+        failure != null);
+    assertTrue("expected a JPF internal/solver failure for the unsupported raw-bits term, got: "
+            + failure.getMessage(),
+        failure.getMessage() != null && failure.getMessage().contains("JPF internal exception"));
   }
 
   public static void rawBitsConcreteFallback(double value) {
