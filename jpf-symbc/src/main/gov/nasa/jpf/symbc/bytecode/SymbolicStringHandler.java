@@ -308,7 +308,7 @@ public class SymbolicStringHandler {
 			} else if (shortName.equals("booleanValue")) {
 				handlefloatValue(invInst, th);
 			} else {
-				throw new RuntimeException("ERROR: symbolic method not handled: " + shortName);
+				throw new UnsupportedSymbolicStringOpException(shortName);
 				//return null;
 			}
 			return invInst.getNext(th);
