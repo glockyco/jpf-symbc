@@ -158,7 +158,7 @@ public class SymbolicStringHandler {
 			} else if (shortName.equals("equalsIgnoreCase")) {
 				ChoiceGenerator<?> cg;
 				if (!th.isFirstStepInsn()) { // first time around
-					cg = new PCChoiceGenerator(2);
+					cg = new PCChoiceGenerator(SymbolicInstructionFactory.collect_constraints ? 1 : 2);
 					th.getVM().setNextChoiceGenerator(cg);
 					return invInst;
 				} else {
@@ -1001,13 +1001,15 @@ public class SymbolicStringHandler {
 			return receiver.endsWith(arg);
 		} else if (comp == StringComparator.CONTAINS) {
 			return receiver.contains(arg);
+		} else if (comp == StringComparator.EQUALSIGNORECASE) {
+			return receiver.equalsIgnoreCase(arg);
 		}
 		throw new RuntimeException(
 			"ERROR: symcrete concrete evaluation not implemented for comparator: " + comp);
 	}
 
 	public void handleEqualsIgnoreCase(JVMInvokeInstruction invInst,  ThreadInfo th) {
-		throw new RuntimeException("ERROR: symbolic string method not Implemented - EqualsIgnoreCase");
+		handleBooleanStringInstructions(invInst,  th, StringComparator.EQUALSIGNORECASE);
 	}
 
 	public void handleEndsWith(JVMInvokeInstruction invInst,  ThreadInfo th) {
