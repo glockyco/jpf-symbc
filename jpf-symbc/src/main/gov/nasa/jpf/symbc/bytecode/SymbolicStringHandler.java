@@ -221,6 +221,10 @@ public class SymbolicStringHandler {
 				}
 			} else if (shortName.equals("trim")) {
 				handleTrim(invInst, th);
+			} else if (shortName.equals("toLowerCase")) {
+				handleToLowerCase(invInst, th);
+			} else if (shortName.equals("toUpperCase")) {
+				handleToUpperCase(invInst, th);
 			} else if (shortName.equals("substring")) {
 				Instruction handled = handleSubString(invInst, th);
 				if (handled != null) {
@@ -1043,20 +1047,19 @@ public class SymbolicStringHandler {
 			//System.out.println("[handleReplace] " + s1 + " " + s2 + " " + s3);
 			StringExpression result = null;
 			if (sym_v1 == null) { // operand 0 is concrete
-				//ElementInfo e1 = th.getElementInfo(s1);
-				String val = String.valueOf((char) s1);
 				if (sym_v2 == null) { // sym_v3 has to be symbolic
-					//ElementInfo e2 = th.getElementInfo(s2);
-					//String val1 = e2.asString();
-					result = sym_v3._replace(val, String.valueOf((char)s2));
+					String oldChar = String.valueOf((char) s2);
+					String newChar = String.valueOf((char) s1);
+					result = sym_v3._replace(oldChar, newChar);
 				} else {
+					String newChar = String.valueOf((char) s1);
 					if (sym_v3 == null) { // only sym_v2 is symbolic
 						ElementInfo e3 = th.getElementInfo(s3);
 						String val2 = e3.asString();
 						sym_v3 = new StringConstant(val2);
-						result = sym_v3._replace(val, sym_v2);
+						result = sym_v3._replace(sym_v2, newChar);
 					} else {
-						result = sym_v3._replace(val, sym_v2);
+						result = sym_v3._replace(sym_v2, newChar);
 					}
 				}
 			} else { // sym_v1 is symbolic
@@ -1290,9 +1293,43 @@ public class SymbolicStringHandler {
 		StringExpression result = sym_v1._trim();
 
 		ElementInfo  objRef = th.getHeap().newString("", th); /*
-																																 * dummy String
-																																 * Object
-																																 */
+																							 * dummy String
+																							 * Object
+																							 */
+		sf.push(objRef.getObjectRef(), true);
+		sf.setOperandAttr(result);
+	}
+
+	public void handleToLowerCase(JVMInvokeInstruction invInst, ThreadInfo th) {
+		StackFrame sf = th.getModifiableTopFrame();
+		StringExpression sym_v1 = (StringExpression) sf.getOperandAttr(0);
+		int s1 = sf.pop();
+		ElementInfo e1 = th.getElementInfo(s1);
+		String val1 = e1.asString();
+
+		if (sym_v1 == null) {
+			sym_v1 = new StringConstant(val1);
+		}
+		StringExpression result = sym_v1._toLowerCase();
+
+		ElementInfo objRef = th.getHeap().newString(val1.toLowerCase(), th);
+		sf.push(objRef.getObjectRef(), true);
+		sf.setOperandAttr(result);
+	}
+
+	public void handleToUpperCase(JVMInvokeInstruction invInst, ThreadInfo th) {
+		StackFrame sf = th.getModifiableTopFrame();
+		StringExpression sym_v1 = (StringExpression) sf.getOperandAttr(0);
+		int s1 = sf.pop();
+		ElementInfo e1 = th.getElementInfo(s1);
+		String val1 = e1.asString();
+
+		if (sym_v1 == null) {
+			sym_v1 = new StringConstant(val1);
+		}
+		StringExpression result = sym_v1._toUpperCase();
+
+		ElementInfo objRef = th.getHeap().newString(val1.toUpperCase(), th);
 		sf.push(objRef.getObjectRef(), true);
 		sf.setOperandAttr(result);
 	}
