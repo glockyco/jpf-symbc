@@ -307,6 +307,16 @@ public class SymbolicStringHandler {
 				handledoubleValue(invInst, th);
 			} else if (shortName.equals("booleanValue")) {
 				handlefloatValue(invInst, th);
+			} else if (shortName.equals("isEmpty")) {
+				ChoiceGenerator<?> cg;
+				if (!th.isFirstStepInsn()) { // first time around
+					cg = new PCChoiceGenerator(SymbolicInstructionFactory.collect_constraints ? 1 : 2);
+					th.getVM().setNextChoiceGenerator(cg);
+					return invInst;
+				} else {
+					handleIsEmpty(invInst, th);
+					return invInst.getNext(th);
+				}
 			} else {
 				throw new UnsupportedSymbolicStringOpException(shortName);
 				//return null;
@@ -921,6 +931,61 @@ public class SymbolicStringHandler {
 
 		}
 
+	}
+
+	// isEmpty() is modeled as the sound, fork-free equality receiver.equals(""), reusing the String
+	// equality machinery. It takes only the receiver (no argument), and mirrors the symcrete choice
+	// selection of the other boolean String ops: under constraint collection, follow the concrete
+	// branch the seed takes so the collected constraint matches the concrete path.
+	private void handleIsEmpty(JVMInvokeInstruction invInst, ThreadInfo th) {
+		StackFrame sf = th.getModifiableTopFrame();
+		StringExpression sym_v1 = (StringExpression) sf.getOperandAttr(0);
+
+		if (sym_v1 == null) {
+			throw new RuntimeException("ERROR: symbolic string method must have a symbolic operand: HandleIsEmpty");
+		}
+
+		ChoiceGenerator<?> cg = th.getVM().getChoiceGenerator();
+		assert (cg instanceof PCChoiceGenerator) : "expected PCChoiceGenerator, got: " + cg;
+		int s1 = sf.pop();
+
+		boolean conditionValue;
+		if (SymbolicInstructionFactory.collect_constraints) {
+			ElementInfo cei1 = th.getElementInfo(s1);
+			if (cei1 == null) {
+				throw new RuntimeException("ERROR: symcrete String isEmpty requires a non-null concrete operand");
+			}
+			conditionValue = cei1.asString().isEmpty();
+			((PCChoiceGenerator) cg).select(conditionValue ? 1 : 0);
+		} else {
+			conditionValue = (Integer) cg.getNextChoice() == 0 ? false : true;
+		}
+
+		PathCondition pc;
+		ChoiceGenerator<?> prev_cg = cg.getPreviousChoiceGenerator();
+		while (!((prev_cg == null) || (prev_cg instanceof PCChoiceGenerator))) {
+			prev_cg = prev_cg.getPreviousChoiceGenerator();
+		}
+		if (prev_cg == null) {
+			pc = new PathCondition();
+		} else {
+			pc = ((PCChoiceGenerator) prev_cg).getCurrentPC();
+		}
+		assert pc != null;
+
+		StringComparator comp = StringComparator.EQUALS;
+		if (conditionValue) {
+			pc.spc._addDet(comp, sym_v1, "");
+		} else {
+			pc.spc._addDet(comp.not(), sym_v1, "");
+		}
+		if (!pc.simplify()) {
+			th.getVM().getSystemState().setIgnored(true);
+		} else {
+			((PCChoiceGenerator) cg).setCurrentPC(pc);
+		}
+
+		sf.push(conditionValue ? 1 : 0, true);
 	}
 
 	/**
