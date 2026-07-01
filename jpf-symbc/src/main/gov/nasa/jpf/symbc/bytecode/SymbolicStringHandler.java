@@ -74,6 +74,7 @@ import gov.nasa.jpf.symbc.numeric.RealExpression;
 import gov.nasa.jpf.symbc.numeric.PathCondition;
 import gov.nasa.jpf.symbc.string.*;
 import gov.nasa.jpf.symbc.mixednumstrg.*;
+import gov.nasa.jpf.symbc.SymbolicInstructionFactory;
 
 
 public class SymbolicStringHandler {
@@ -147,7 +148,7 @@ public class SymbolicStringHandler {
 			} else if (shortName.equals("equals")) {
 				ChoiceGenerator<?> cg;
 				if (!th.isFirstStepInsn()) { // first time around
-					cg = new PCChoiceGenerator(2);
+					cg = new PCChoiceGenerator(SymbolicInstructionFactory.collect_constraints ? 1 : 2);
 					th.getVM().setNextChoiceGenerator(cg);
 					return invInst;
 				} else {
@@ -167,7 +168,7 @@ public class SymbolicStringHandler {
 			} else if (shortName.equals("endsWith")) {
 				ChoiceGenerator<?> cg;
 				if (!th.isFirstStepInsn()) { // first time around
-					cg = new PCChoiceGenerator(2);
+					cg = new PCChoiceGenerator(SymbolicInstructionFactory.collect_constraints ? 1 : 2);
 					th.getVM().setNextChoiceGenerator(cg);
 					return invInst;
 				} else {
@@ -177,7 +178,7 @@ public class SymbolicStringHandler {
 			} else if (shortName.equals("startsWith")) {
 				ChoiceGenerator<?> cg;
 				if (!th.isFirstStepInsn()) { // first time around
-					cg = new PCChoiceGenerator(2);
+					cg = new PCChoiceGenerator(SymbolicInstructionFactory.collect_constraints ? 1 : 2);
 					th.getVM().setNextChoiceGenerator(cg);
 					return invInst;
 				} else {
@@ -187,7 +188,7 @@ public class SymbolicStringHandler {
 			} else if (shortName.equals ("contains")) {
 				ChoiceGenerator<?> cg;
 				if (!th.isFirstStepInsn()) { // first time around
-					cg = new PCChoiceGenerator(2);
+					cg = new PCChoiceGenerator(SymbolicInstructionFactory.collect_constraints ? 1 : 2);
 					th.getVM().setNextChoiceGenerator(cg);
 					return invInst;
 				} else {
@@ -834,12 +835,26 @@ public class SymbolicStringHandler {
 
 			cg = th.getVM().getChoiceGenerator();
 			assert (cg instanceof PCChoiceGenerator) : "expected PCChoiceGenerator, got: " + cg;
-			conditionValue = (Integer) cg.getNextChoice() == 0 ? false : true;
-
-			// System.out.println("conditionValue: " + conditionValue);
-
 			int s1 = sf.pop();
 			int s2 = sf.pop();
+
+			// Symcrete (concolic) choice selection, mirroring the numeric IF_ICMP* instructions'
+			// symcrete fix: under constraint collection, follow the concrete branch the seed
+			// actually takes instead of exploring choice 0 (false) first. Without this the collected
+			// String constraint is decoupled from the concrete path -- it can be the negation of the
+			// seed's path -- making the extracted specification unsound.
+			if (SymbolicInstructionFactory.collect_constraints) {
+				ElementInfo cei1 = th.getElementInfo(s1);
+				ElementInfo cei2 = th.getElementInfo(s2);
+				if (cei1 == null || cei2 == null) {
+					throw new RuntimeException(
+						"ERROR: symcrete String comparison requires non-null concrete operands: " + comp);
+				}
+				conditionValue = concreteBooleanStringResult(comp, cei2.asString(), cei1.asString());
+				((PCChoiceGenerator) cg).select(conditionValue ? 1 : 0);
+			} else {
+				conditionValue = (Integer) cg.getNextChoice() == 0 ? false : true;
+			}
 			PathCondition pc;
 
 			// pc is updated with the pc stored in the choice generator above
@@ -906,6 +921,24 @@ public class SymbolicStringHandler {
 
 		}
 
+	}
+
+	/**
+	 * The concrete boolean result of a String comparison in program order (receiver.op(arg)), used
+	 * for symcrete (concolic) choice selection under constraint collection.
+	 */
+	private static boolean concreteBooleanStringResult(StringComparator comp, String receiver, String arg) {
+		if (comp == StringComparator.EQUALS) {
+			return receiver.equals(arg);
+		} else if (comp == StringComparator.STARTSWITH) {
+			return receiver.startsWith(arg);
+		} else if (comp == StringComparator.ENDSWITH) {
+			return receiver.endsWith(arg);
+		} else if (comp == StringComparator.CONTAINS) {
+			return receiver.contains(arg);
+		}
+		throw new RuntimeException(
+			"ERROR: symcrete concrete evaluation not implemented for comparator: " + comp);
 	}
 
 	public void handleEqualsIgnoreCase(JVMInvokeInstruction invInst,  ThreadInfo th) {
