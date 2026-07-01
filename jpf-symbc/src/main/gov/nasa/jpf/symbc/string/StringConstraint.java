@@ -182,7 +182,7 @@ public class StringConstraint {
   
 	public void accept(ConstraintExpressionVisitor visitor) {
 		visitor.preVisit(this);
-		left.accept(visitor);
+		if (left != null) left.accept(visitor);
 		right.accept(visitor);
 	    if (and!=null) and.accept(visitor);
 			visitor.postVisit(this);
@@ -194,7 +194,7 @@ public class StringConstraint {
 
 	public void accept(CollectVariableVisitor visitor) {
 		visitor.preVisit(this);
-		left.accept(visitor);
+		if (left != null) left.accept(visitor);
 		right.accept(visitor);
 	    if (and!=null) and.accept(visitor);
 			visitor.postVisit(this);
