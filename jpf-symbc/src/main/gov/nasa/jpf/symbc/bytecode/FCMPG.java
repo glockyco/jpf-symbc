@@ -65,7 +65,6 @@ public class FCMPG extends gov.nasa.jpf.jvm.bytecode.FCMPG {
             assert (curCg instanceof PCChoiceGenerator) : "expected PCChoiceGenerator, got: " + curCg;
             cg = (PCChoiceGenerator) curCg;
 
-            conditionValue = ((PCChoiceGenerator) cg).getNextChoice() - 1;
             if (SymbolicInstructionFactory.collect_constraints) {
                 // YN: reuse conditionValue written from concrete exec + set choice correctly
                 ((PCChoiceGenerator) cg).select(conditionValue + 1);

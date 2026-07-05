@@ -21,6 +21,7 @@ package gov.nasa.jpf.symbc;
 import za.ac.sun.cs.green.Green;
 import za.ac.sun.cs.green.util.Configuration;
 import gov.nasa.jpf.Config;
+import gov.nasa.jpf.JPFConfigException;
 import gov.nasa.jpf.symbc.bytecode.*;
 import gov.nasa.jpf.symbc.numeric.MinMax;
 import gov.nasa.jpf.symbc.numeric.solvers.ProblemChoco;
@@ -730,6 +731,12 @@ public class SymbolicInstructionFactory extends gov.nasa.jpf.jvm.bytecode.Instru
 		this.pcChoiceOptimization = conf.getBoolean("symbolic.optimizechoices", true);
 
         	this.symArrays = conf.getBoolean("symbolic.arrays", false);
+		if (collect_constraints && this.pcChoiceOptimization) {
+			throw new JPFConfigException("symbolic.optimizechoices conflicts with constraint collection mode. constraint collection mode requires it off");
+		}
+		if (collect_constraints && this.symArrays) {
+			throw new JPFConfigException("symbolic.arrays conflicts with constraint collection mode. constraint collection mode requires it off");
+		}
 
 		/* load bitvector length, default to 32 */
 		bvlength = conf.getInt("symbolic.bvlength", 32);
