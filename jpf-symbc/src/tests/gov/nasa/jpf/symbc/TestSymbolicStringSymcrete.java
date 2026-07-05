@@ -44,6 +44,7 @@ public class TestSymbolicStringSymcrete extends InvokeTest {
       SYM_METHOD,
       "+classpath=" + System.getProperty("java.class.path"),
       "+symbolic.collect_constraints=true",
+      "+symbolic.optimizechoices=false",
       "+symbolic.strings=true",
       "+symbolic.dp=z3",
       "+symbolic.string_dp_timeout_ms=3000"

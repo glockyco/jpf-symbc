@@ -31,6 +31,7 @@ public class TestSymbolicStringCaseChange extends InvokeTest {
         method,
         "+classpath=" + System.getProperty("java.class.path"),
         "+symbolic.collect_constraints=true",
+        "+symbolic.optimizechoices=false",
         "+symbolic.strings=true",
         "+symbolic.dp=z3",
         "+symbolic.string_dp_timeout_ms=3000"
