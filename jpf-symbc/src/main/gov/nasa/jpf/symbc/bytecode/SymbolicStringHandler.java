@@ -375,12 +375,26 @@ public class SymbolicStringHandler {
 		if (sym_v1 == null) {
 			throw new RuntimeException("ERROR: symbolic string method must have one symbolic operand: HandleLength");
 		} else {
-			sf.pop();
-			sf.push(0, false); /* dont care value for length */
+			int objRef = sf.pop();
+			// Symcrete (concolic) length. Under constraint collection, push the receiver's real
+			// concrete length so the following IF bytecode selects the branch the seed actually
+			// takes. A dummy 0 (the exploration-mode value) decouples length() predicates from the
+			// concrete path and yields unsound length()==0 specifications for non-empty strings.
+			// Mirrors the symcrete fix already applied to the numeric IF_ICMP* and boolean string
+			// handlers.
+			int concreteLength = 0;
+			if (SymbolicInstructionFactory.collect_constraints) {
+				ElementInfo ei = th.getElementInfo(objRef);
+				if (ei == null) {
+					throw new RuntimeException(
+						"ERROR: symcrete String.length() requires a concrete receiver");
+				}
+				concreteLength = ei.asString().length();
+			}
+			sf.push(concreteLength, false);
 			IntegerExpression sym_v2 = sym_v1._length();
 			sf.setOperandAttr(sym_v2);
 		}
-
 	}
 
 	public void handleIndexOf(JVMInvokeInstruction invInst, ThreadInfo th) {
