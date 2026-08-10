@@ -310,7 +310,7 @@ public class SymbolicStringHandler {
 			} else if (shortName.equals("doubleValue")) {
 				handledoubleValue(invInst, th);
 			} else if (shortName.equals("booleanValue")) {
-				handlefloatValue(invInst, th);
+				handlebooleanValue(invInst, th);
 			} else if (shortName.equals("isEmpty")) {
 				ChoiceGenerator<?> cg;
 				if (!th.isFirstStepInsn()) { // first time around
@@ -720,7 +720,7 @@ public class SymbolicStringHandler {
 
 	
 
-	public void handlebooleanValue(JVMInvokeInstruction invInst, SystemState ss, ThreadInfo th) {
+	public void handlebooleanValue(JVMInvokeInstruction invInst, ThreadInfo th) {
 		StackFrame sf = th.getModifiableTopFrame();
 		Expression sym_v3 = (Expression) sf.getOperandAttr(0);
 
