@@ -2811,7 +2811,10 @@ public class SymbolicStringHandler {
 	public void handleLongAppend(JVMInvokeInstruction invInst, ThreadInfo th) {
 
 		StackFrame sf = th.getModifiableTopFrame();
-		IntegerExpression sym_v1 = (IntegerExpression) sf.getOperandAttr(0);
+		// A long occupies two slots and its attribute hangs off the pair, which is what
+		// handleDoubleAppend below reads for the other two-slot type. Reading slot 0 instead
+		// finds nothing, so an append of a symbolic long looked concrete and then threw.
+		IntegerExpression sym_v1 = (IntegerExpression) sf.getLongOperandAttr();
 		SymbolicStringBuilder sym_v2 = (SymbolicStringBuilder) sf.getOperandAttr(2);
 
 		if (sym_v2 == null)
@@ -3016,6 +3019,13 @@ public class SymbolicStringHandler {
 		if (sym_obj_v2 instanceof SymbolicStringBuilder) {
 			SymbolicStringBuilder sym_v2 = (SymbolicStringBuilder) sym_obj_v2;
 			sym_v1 = sym_v2.getstr();
+		} else if (sym_obj_v2 instanceof IntegerExpression) {
+			// x.toString() is the same conversion String.valueOf(x) performs, and handleValueOf
+			// already builds it. Throwing here loses the relation for every boxed numeric that
+			// reaches toString, which is the ordinary way a number becomes a String.
+			sym_v1 = StringExpression._valueOf((IntegerExpression) sym_obj_v2);
+		} else if (sym_obj_v2 instanceof RealExpression) {
+			sym_v1 = StringExpression._valueOf((RealExpression) sym_obj_v2);
 		} else {
 			throw new RuntimeException("ERROR: symbolic type not Handled: toString");
 		}
