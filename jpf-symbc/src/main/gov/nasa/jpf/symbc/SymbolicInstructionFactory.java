@@ -731,9 +731,20 @@ public class SymbolicInstructionFactory extends gov.nasa.jpf.jvm.bytecode.Instru
 		this.pcChoiceOptimization = conf.getBoolean("symbolic.optimizechoices", true);
 
         	this.symArrays = conf.getBoolean("symbolic.arrays", false);
+		// Constraint collection follows one concrete execution and records the constraints along
+		// that path. A branch bytecode does this with a PCChoiceGenerator of one choice. It then
+		// calls select() with the condition value that the concrete execution produced.
+		// The optimization package decides the branch in IFInstrSymbHelper, which reads
+		// getNextChoice(). The run then follows the first choice of the generator. Seeded with -5,
+		// `if (value > 0) return 1; return 2;` executes 2, and the run records 1.
 		if (collect_constraints && this.pcChoiceOptimization) {
 			throw new JPFConfigException("symbolic.optimizechoices conflicts with constraint collection mode. constraint collection mode requires it off");
 		}
+		// Constraint collection also reads the concrete value that each instruction leaves on the
+		// stack. The symarrays package puts a placeholder there. symarrays/IALOAD pushes 0 and
+		// attaches a SelectExpression, because a symbolic exploration reads the attribute alone.
+		// A read of {10, 20, 30} at index 1 then yields 0, and the run records 0 as the output.
+		// A later branch on that value follows the arm for 0.
 		if (collect_constraints && this.symArrays) {
 			throw new JPFConfigException("symbolic.arrays conflicts with constraint collection mode. constraint collection mode requires it off");
 		}
